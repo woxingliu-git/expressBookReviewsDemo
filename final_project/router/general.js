@@ -4,6 +4,8 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
+const axios = require("axios").default;
+
 // Check if a user with the given username already exists
 const doesExist = (username) => {
     // Filter the users array for any user with the same username
@@ -45,7 +47,6 @@ public_users.get('/',function (req, res) {
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
   //Write your code here
-  console.log("isbn:", req.params.isbn);
   const isbn = req.params.isbn
   const book = Object.values(books).find(book => book.isbn === isbn);
   res.send(JSON.stringify({book}, null, 4));
@@ -75,10 +76,71 @@ public_users.get('/title/:title',function (req, res) {
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
   //Write your code here
-  console.log("isbn:", req.params.isbn);
   const isbn = req.params.isbn
   const book = Object.values(books).find(book => book.isbn === isbn);
   return res.status(200).send(book.reviews);
 });
+
+const connectToURL = (url) => {
+    const req = axios.get(url);
+    console.log(req);
+    req.then(resp => {
+      console.log("Fullfiled");
+      console.log(resp.data);
+    })
+    .catch(err => {
+      console.log("Rejected for url" + url);
+      console.log(err.toString()); 
+    })
+}
+
+connectToURL('http://localhost:5000')
+
+const connectToURLUseIsbn = (url) => {
+    const req = axios.get(url);
+    console.log(req);
+    req.then(resp => {
+      console.log("Fullfiled");
+      console.log(resp.data);
+    })
+    .catch(err => {
+      console.log("Rejected for url" + url);
+      console.log(err.toString()); 
+    })
+}
+
+connectToURLUseIsbn('http://localhost:5000/isbn/1234567890123')
+
+const connectToURLUseAuthor = (url) => {
+    const req = axios.get(url);
+    console.log(req);
+    req.then(resp => {
+      console.log("Fullfiled");
+      console.log(resp.data);
+    })
+    .catch(err => {
+      console.log("Rejected for url" + url);
+      console.log(err.toString()); 
+    })
+}
+
+connectToURLUseAuthor('http://localhost:5000/author/Chinua Achebe')
+
+const connectToURLUseTitle = (url) => {
+    const req = axios.get(url);
+    console.log(req);
+    req.then(resp => {
+      console.log("Fullfiled");
+      console.log(resp.data);
+    })
+    .catch(err => {
+      console.log("Rejected for url" + url);
+      console.log(err.toString()); 
+    })
+}
+
+connectToURLUseTitle('http://localhost:5000/title/Fairy tales')
+
+
 
 module.exports.general = public_users;

@@ -5,6 +5,8 @@ const regd_users = express.Router();
 
 let users = [];
 
+
+
 const isValid = (username)=>{ //returns boolean
 //write code to check is the username is valid
 
@@ -53,8 +55,40 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
+  const isbn = req.params.isbn
+  console.log("isbn:", isbn);
 
-  return res.status(300).json({message: "Yet to be implemented"});
+  const newReview = {
+    username: req.session.authorization.username,
+    body: req.body.body
+  };
+
+  const bookKeys = Object.keys(books);
+  for (const key of bookKeys) {
+    if (books[key].isbn === isbn) {
+      books[key].reviews[newReview.username] = {
+        body: newReview.body,
+      };
+      break;
+    }
+  } 
+  return res.status(200).json({message: "success to update review"});
+});
+
+// Delete a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    //Write your code here
+    const isbn = req.params.isbn
+    const loginUserName = req.session.authorization.username
+    
+    const bookKeys = Object.keys(books);
+    for (const key of bookKeys) {
+    if (books[key].isbn === isbn) {  
+      delete books[key].reviews[loginUserName]
+      break;
+    }
+  }
+  return res.status(200).json({message: "success to delete review"});
 });
 
 module.exports.authenticated = regd_users;
